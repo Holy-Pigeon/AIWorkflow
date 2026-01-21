@@ -1,6 +1,0 @@
-akshare
-pandas
-psycopg2-binary
-SQLAlchemy
-requests
-python-dateutil
