@@ -1,0 +1,317 @@
+{
+  "id": "workflow-1769010126062",
+  "name": "daily-task-workflow",
+  "description": "Created with Workflow Studio",
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "start-node-default",
+      "type": "start",
+      "name": "start-node-default",
+      "position": {
+        "x": 105,
+        "y": 195
+      },
+      "data": {
+        "label": "Start"
+      }
+    },
+    {
+      "id": "end-node-default",
+      "type": "end",
+      "name": "end-node-default",
+      "position": {
+        "x": 3330,
+        "y": 90
+      },
+      "data": {
+        "label": "End"
+      }
+    },
+    {
+      "id": "question-1762065541316",
+      "type": "askUserQuestion",
+      "name": "question-1762065541316",
+      "position": {
+        "x": 285,
+        "y": 135
+      },
+      "data": {
+        "questionText": "Ask user Task",
+        "options": [
+          {
+            "label": "添加新功能",
+            "description": "用户提出新的需求，结合工程已有逻辑评估如何添加功能",
+            "id": "opt-1762065544725-f9027il"
+          },
+          {
+            "label": "重构已有功能",
+            "description": "分析某个功能模块的合理性，然后进行合理重构",
+            "id": "opt-1762065544725-99s3p5n"
+          },
+          {
+            "id": "opt-1769006961496-mjqsttn",
+            "label": "删除某个功能",
+            "description": "梳理给定功能的逻辑，找出所有引用关系，然后安全删除所有相关逻辑"
+          }
+        ],
+        "outputPorts": 3
+      }
+    },
+    {
+      "id": "prompt-1762065918375",
+      "type": "prompt",
+      "name": "prompt-1762065918375",
+      "position": {
+        "x": 600,
+        "y": 120
+      },
+      "data": {
+        "label": "需求分析",
+        "prompt": "对用户的需求进行细化，你需要告诉用户你当前对需求的理解，对模糊的地方追问用户细节。",
+        "variables": {}
+      }
+    },
+    {
+      "id": "question-1769008631742",
+      "type": "askUserQuestion",
+      "name": "question-1769008631742",
+      "position": {
+        "x": 990,
+        "y": 105
+      },
+      "data": {
+        "questionText": "用户是否满意",
+        "options": [
+          {
+            "label": "这就是我想要的",
+            "description": "First option",
+            "id": "opt-1769008631746-7i6zgw1"
+          },
+          {
+            "label": "我还有想法（写在下方的输入框内）",
+            "description": "Second option",
+            "id": "opt-1769008631746-n50burm"
+          }
+        ],
+        "outputPorts": 2
+      }
+    },
+    {
+      "id": "prompt-1769008925924",
+      "type": "prompt",
+      "name": "prompt-1769008925924",
+      "position": {
+        "x": 1260,
+        "y": 105
+      },
+      "data": {
+        "label": "可行性评估",
+        "prompt": "你是一个有30年软件工程经验的大师，你非常熟悉当前项目你需要基于用户完整的需求，结合已有代码逻辑，分析可行性以及实现方案",
+        "variables": {}
+      }
+    },
+    {
+      "id": "agent-1769009039334",
+      "type": "subAgent",
+      "name": "agent-1769009039334",
+      "position": {
+        "x": 1605,
+        "y": 90
+      },
+      "data": {
+        "description": "linus系统架构专家",
+        "prompt": "你是linus，你有30年底层架构开发经验，你需要评估当前方案的改动是否符合软件工程规范。 针对新需求，可扩展性的权重是最高的，你需要基于当前方案需要不断反问：如果这里下次有个类似的新的需求，当前设计需要改哪些地方 能否快速解决问题？针对有问题的地方，你需要给出更完善的设计。最后你需要输出新的、完善过的设计方案",
+        "model": "inherit",
+        "outputPorts": 1
+      }
+    },
+    {
+      "id": "prompt-1769009063733",
+      "type": "prompt",
+      "name": "prompt-1769009063733",
+      "position": {
+        "x": 1935,
+        "y": 90
+      },
+      "data": {
+        "label": "工作任务是否可拆分",
+        "prompt": "评估当前方案是否能够分给2个agent独立、并行实现，然后git merge。你需要判断，然后输出true或者false。如果是true，还需要列举出拆分后的两个子任务。",
+        "variables": {}
+      }
+    },
+    {
+      "id": "ifelse-1769009387441",
+      "type": "ifElse",
+      "name": "ifelse-1769009387441",
+      "position": {
+        "x": 2295,
+        "y": 60
+      },
+      "data": {
+        "evaluationTarget": "输出true+具体子任务为true，输出false为false",
+        "branches": [
+          {
+            "label": "True",
+            "condition": "When condition is true",
+            "id": "ifelse_0_1769009387443"
+          },
+          {
+            "label": "False",
+            "condition": "When condition is false",
+            "id": "ifelse_1_1769009387443"
+          }
+        ],
+        "outputPorts": 2
+      }
+    },
+    {
+      "id": "agent-1769009485869",
+      "type": "subAgent",
+      "name": "agent-1769009485869",
+      "position": {
+        "x": 2535,
+        "y": 45
+      },
+      "data": {
+        "description": "执行agent",
+        "prompt": "接收并理解第一个子任务或者完整任务，分析相关代码逻辑，开始实现相关功能。",
+        "model": "sonnet",
+        "outputPorts": 1
+      }
+    },
+    {
+      "id": "agent-1769009591011",
+      "type": "subAgent",
+      "name": "agent-1769009591011",
+      "position": {
+        "x": 2535,
+        "y": 195
+      },
+      "data": {
+        "description": "执行agent2",
+        "prompt": "接收并理解第二个子任务，分析相关代码逻辑，开始实现相关功能。",
+        "model": "sonnet",
+        "outputPorts": 1
+      }
+    },
+    {
+      "id": "agent-1769009820454",
+      "type": "subAgent",
+      "name": "agent-1769009820454",
+      "position": {
+        "x": 2925,
+        "y": 45
+      },
+      "data": {
+        "description": "CodeReview",
+        "prompt": "你需要基于git变更理解实现的功能，并执行codereview，你需要检查代码是否安全，设计是否具有扩展性（重点），静态分析复杂度评估性能是否合理。如果有任何一者存在问题，需要修复，并且不影响原本的逻辑。",
+        "model": "inherit",
+        "outputPorts": 1
+      }
+    }
+  ],
+  "connections": [
+    {
+      "id": "reactflow__edge-start-node-defaultout-question-1762065541316input",
+      "from": "start-node-default",
+      "to": "question-1762065541316",
+      "fromPort": "out",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-question-1762065541316branch-0-prompt-1762065918375in",
+      "from": "question-1762065541316",
+      "to": "prompt-1762065918375",
+      "fromPort": "branch-0",
+      "toPort": "in"
+    },
+    {
+      "id": "reactflow__edge-prompt-1762065918375out-question-1769008631742input",
+      "from": "prompt-1762065918375",
+      "to": "question-1769008631742",
+      "fromPort": "out",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-question-1769008631742branch-1-prompt-1762065918375in",
+      "from": "question-1769008631742",
+      "to": "prompt-1762065918375",
+      "fromPort": "branch-1",
+      "toPort": "in"
+    },
+    {
+      "id": "reactflow__edge-question-1769008631742branch-0-prompt-1769008925924in",
+      "from": "question-1769008631742",
+      "to": "prompt-1769008925924",
+      "fromPort": "branch-0",
+      "toPort": "in"
+    },
+    {
+      "id": "reactflow__edge-prompt-1769008925924out-agent-1769009039334input",
+      "from": "prompt-1769008925924",
+      "to": "agent-1769009039334",
+      "fromPort": "out",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-agent-1769009039334output-prompt-1769009063733in",
+      "from": "agent-1769009039334",
+      "to": "prompt-1769009063733",
+      "fromPort": "output",
+      "toPort": "in"
+    },
+    {
+      "id": "reactflow__edge-prompt-1769009063733out-ifelse-1769009387441input",
+      "from": "prompt-1769009063733",
+      "to": "ifelse-1769009387441",
+      "fromPort": "out",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-ifelse-1769009387441branch-0-agent-1769009485869input",
+      "from": "ifelse-1769009387441",
+      "to": "agent-1769009485869",
+      "fromPort": "branch-0",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-ifelse-1769009387441branch-0-agent-1769009591011input",
+      "from": "ifelse-1769009387441",
+      "to": "agent-1769009591011",
+      "fromPort": "branch-0",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-ifelse-1769009387441branch-1-agent-1769009485869input",
+      "from": "ifelse-1769009387441",
+      "to": "agent-1769009485869",
+      "fromPort": "branch-1",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-agent-1769009485869output-agent-1769009820454input",
+      "from": "agent-1769009485869",
+      "to": "agent-1769009820454",
+      "fromPort": "output",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-agent-1769009591011output-agent-1769009820454input",
+      "from": "agent-1769009591011",
+      "to": "agent-1769009820454",
+      "fromPort": "output",
+      "toPort": "input"
+    },
+    {
+      "id": "reactflow__edge-agent-1769009820454output-end-node-defaultin",
+      "from": "agent-1769009820454",
+      "to": "end-node-default",
+      "fromPort": "output",
+      "toPort": "in"
+    }
+  ],
+  "createdAt": "2026-01-21T15:42:06.062Z",
+  "updatedAt": "2026-01-21T15:42:06.062Z",
+  "subAgentFlows": []
+}
